@@ -155,12 +155,20 @@ public class DatawayModule implements WebModule, UiConfig {
                 if (!dalType.equalsIgnoreCase(providerName) || StringUtils.isBlank(providerType)) {
                     continue;
                 }
-                setupProvider = true;
-                Class<?> loadClass = environment.getClassLoader().loadClass(providerType);
+                // load providerType
+                Class<?> loadClass = null;
+                try {
+                    loadClass = environment.getClassLoader().loadClass(providerType);
+                } catch (ClassNotFoundException e) {
+                    logger.error("dal provider ClassNotFound '" + providerName + "' failed. " + e.getMessage(), e);
+                    continue;
+                }
+                // setupProvider
                 logger.info("use '" + providerName + "' as the dataAccessLayer, provider = " + loadClass.getName());
                 apiBinder.bindType(ApiDataAccessLayer.class).toProvider(//
                         HasorUtils.autoAware(environment, new InnerApiDalCreator(loadClass))//
                 );
+                setupProvider = true;
                 break;
             }
         }
