@@ -140,7 +140,7 @@ if [ $have_tty -eq 1 ]; then
   echo "Using CONSOLE_OUT: $CONSOLE_OUT"
 fi
 
-cd $APP_HOME
+cd "$APP_HOME"
 #
 #
 echo "--------------------------"
